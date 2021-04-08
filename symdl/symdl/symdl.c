@@ -50,7 +50,7 @@ static int cache_next_index = 0;
 static int cache_capacity = 128;
 static pthread_rwlock_t rwlock = PTHREAD_RWLOCK_INITIALIZER;
 
-
+// 在section中匹配待搜索函数符号
 static void *match_name_with_section(const char *name, section_t *section, intptr_t slide, nlist_t *symtab, char *strtab, uint32_t *indirect_symtab) {
     uint32_t *indirect_symbol_indices = indirect_symtab + section->reserved1;
     void **indirect_symbol_bindings = (void **)((uintptr_t)slide + section->addr);
@@ -118,6 +118,7 @@ static void *func_pointer_with_name_in_image(const char *name, const struct mach
                 strcmp(cur_seg_cmd->segname, SEG_DATA_CONST) != 0) {
                 continue;
             }
+            // 寻找匹配的section，进一步查找对应的函数名
             for (uint j = 0; j < cur_seg_cmd->nsects; j++) {
                 section_t *sect = (section_t *)(cur + sizeof(segment_command_t)) + j;
                 if ((sect->flags & SECTION_TYPE) == S_LAZY_SYMBOL_POINTERS) {
