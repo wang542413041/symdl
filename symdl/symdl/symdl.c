@@ -40,6 +40,15 @@ typedef struct nlist nlist_t;
 #define SEG_DATA_CONST  "__DATA_CONST"
 #endif
 
+
+/*
+存储相关结构体
+存储位置
+存储起始点
+存储容量
+存取锁
+*/
+
 typedef struct {
     char *name;
     void *pointer;
