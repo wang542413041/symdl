@@ -133,8 +133,10 @@ static void *func_pointer_with_name_in_image(const char *name, const struct mach
     return NULL;
 }
 
+// 判断缓存里是否有调用函数对应的指针
 static void *read_from_cache(const char *name){
     void *pointer = NULL;
+    // 操作时 锁处理 防止边写边读
     pthread_rwlock_rdlock(&rwlock);
     if (!cache) {
         goto end;
@@ -153,6 +155,7 @@ end:
     return pointer;
 }
 
+// 将搜寻到的值进行存储操作
 static void write_to_cache(const char *name, void *pointer){
     pthread_rwlock_wrlock(&rwlock);
     if (cache == NULL) {
@@ -182,19 +185,26 @@ end:
     
 }
 
+// 函数符号地址查找
 void *symdl(const char *symbol){
+    
+    // 1. 符号空判断
     if (symbol == NULL) {
         return NULL;
     }
     
+    // 2. 符号是否缓存存取
     void *pointer = read_from_cache(symbol);
     if (pointer) {
         return pointer;
     }
     
+    // 3. 获取imageList读取传入符号对应地址指针
     uint32_t image_count = _dyld_image_count();
     for (uint32_t i = 0; i < image_count; i++) {
+        // 4. 搜寻指针
         void *pointer = func_pointer_with_name_in_image(symbol, _dyld_get_image_header(i), _dyld_get_image_vmaddr_slide(i));
+        // 5. 缓存指针
         if (pointer) {
             write_to_cache(symbol, pointer);
             return pointer;
