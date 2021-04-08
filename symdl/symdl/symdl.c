@@ -20,6 +20,8 @@
 #include <mach-o/nlist.h>
 #include <pthread/pthread.h>
 
+
+// mach header 结构体
 #ifdef __LP64__
 typedef struct mach_header_64 mach_header_t;
 typedef struct segment_command_64 segment_command_t;
