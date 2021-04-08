@@ -71,7 +71,7 @@ static void *match_name_with_section(const char *name, section_t *section, intpt
     return NULL;
 }
 
-
+// 
 static void *func_pointer_with_name_in_image(const char *name, const struct mach_header *header, intptr_t slide){
     Dl_info info;
     if (dladdr(header, &info) == 0) {
@@ -202,7 +202,7 @@ void *symdl(const char *symbol){
     // 3. 获取imageList读取传入符号对应地址指针
     uint32_t image_count = _dyld_image_count();
     for (uint32_t i = 0; i < image_count; i++) {
-        // 4. 搜寻指针
+        // 4. 搜寻指针: 待搜索函数符号 imaget头 image偏移量
         void *pointer = func_pointer_with_name_in_image(symbol, _dyld_get_image_header(i), _dyld_get_image_vmaddr_slide(i));
         // 5. 缓存指针
         if (pointer) {
